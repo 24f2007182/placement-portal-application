@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> Admin Dashboard</title>
+    </head>
+    <body>
+        <h3>Welcome {{ admin.name }}</h3>
+         <div>
+        <h3>Total Students: {{ totalStudents }}</h3>
+        <h3>Total Companies: {{ totalCompanies }}</h3>
+        <h3>Total Jobs: {{ totalJobs }}</h3>
+        <h3>Total Applications: {{ totalApplications }}</h3>
+    </div>
+
+    <hr>
+
+    <a href="{{ url_for('admin.company') }}">Manage Companies</a><br>
+    <a href="{{ url_for('admin.jobs') }}">Manage Job Postings</a><br>
+    <a href="{{ url_for('admin.students') }}">View Students</a>
+    </body>
+</html>
