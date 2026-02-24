@@ -6,9 +6,6 @@ import random
 def seed():
         print("Seeding database...")
 
-        # --------------------
-        # ADMINS
-        # --------------------
         admin_user1 = User(username="admin1", passwordHash="admin123", role="admin")
         admin1 = Admin(name="Placement Officer", contactNumber=9876543210, user=admin_user1)
 
@@ -17,9 +14,7 @@ def seed():
 
         db.session.add_all([admin1, admin2])
 
-        # --------------------
-        # COMPANIES
-        # --------------------
+
         company_names = [
             ("Google", "Technology"),
             ("TCS", "IT Services"),
@@ -44,9 +39,7 @@ def seed():
 
         db.session.add_all(companies)
 
-        # --------------------
-        # STUDENTS
-        # --------------------
+
         departments = ["CSE", "IT", "ECE", "EEE", "MECH"]
         skills_list = ["Python, SQL", "Java, Spring", "C++, DSA", "Machine Learning", "Web Development"]
 
@@ -68,9 +61,6 @@ def seed():
 
         db.session.commit()
 
-        # --------------------
-        # JOB POSITIONS (only approved companies)
-        # --------------------
         jobs = []
         for company in companies:
             if company.approved:
@@ -91,9 +81,6 @@ def seed():
         db.session.add_all(jobs)
         db.session.commit()
 
-        # --------------------
-        # APPLICATIONS
-        # --------------------
         applications = []
         for student in students:
             applied_jobs = random.sample(jobs, k=min(3, len(jobs)))

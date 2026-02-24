@@ -4,8 +4,23 @@
         <title>Placement Portal Home</title>
     </head>
     <body>
+        <nav class="navbar navbar-expand-lg px-4">
+        <a class="navbar-brand" href="{{ url_for('index') }}">Placement Portal</a>
 
-
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "">About Us</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "">Best Practices</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Login/Sign Up</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
         
     </body>
 </html>

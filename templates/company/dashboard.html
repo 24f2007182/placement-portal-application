@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Company Dashboard</title>
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg px-4">
+        <a class="navbar-brand" href="{{ url_for('showCompanyDash') }}">Placement Portal</a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "{{ url_for('showCompanyDash') }}">Dashboard</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives') }}">Existing Drives</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "{{ url_for('createDrive') }}">Create New Drive</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications') }}">View Applications</a>
+                </li>
+                <li class = "nav-item">
+                    <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+        <div class = "d-flex flex-xl-row p-8">
+        <h3 class="p-8">Total Drives: {{ totalDrives }}</h3>
+        <h3 class="p-8">Total Applications: {{ totalApplications }}</h3>
+        <h3 class="p-8">Total Students Placed: {{ totalPlaced }}</h3>
+    </div>
+    </body>
+</html>

@@ -34,7 +34,8 @@
             <input type="text" name="search" placeholder="Search by name, ID or conatct...">
             <button type="submit">Search</button>
         </form>
-        <table class = "table-scroll">
+        <div class="table-responsive table-responsive overflow-auto">
+        <table class = "table table-striped">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
@@ -68,11 +69,12 @@
                 </tr>
                 {% endfor %}
         </table>
+        </div>
     </body>
 </html>
 <style>
     .table-scroll{
-        max-height: 700px;
+        max-height: 400px;
         overflow: auto;
         border: 1px solid;
     }
