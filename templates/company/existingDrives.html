@@ -7,21 +7,21 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg px-4">
-        <a class="navbar-brand" href="{{ url_for('showCompanyDash') }}">Placement Portal</a>
+        <a class="navbar-brand" href="{{ url_for('showCompanyDash', companyId = companyId) }}">Placement Portal</a>
 
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDash') }}">Dashboard</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanyDash', companyId = companyId) }}">Dashboard</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives') }}">Existing Drives</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives', companyId = companyId) }}">Existing Drives</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('createDrive') }}">Create New Drive</a>
+                    <a class = "nav-link" href = "{{ url_for('createDrive', companyId = companyId) }}">Create New Drive</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications') }}">View Applications</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications', companyId = companyId) }}">View Applications</a>
                 </li>
                 <li class = "nav-item">
                     <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Logout</a>
@@ -43,9 +43,11 @@
                 <td>{{ drive.jobId }}</td>
                 <td> {{ drive.driveName }}</td>
                 <td>
-                    <a class="btn btn-primary" href = "{{ url_for('showCompanyApplications', jobId = drive.jobId) }}">View Details</a>
+                    <a class="btn btn-primary" href = "{{ url_for('showCompanyDrives', companyId = companyId, viewDriveId = drive.jobId) }}">View Details</a>
+
+                    <a class="btn btn-primary" href = "{{ url_for('showCompanyApplications', companyId = companyId, jobId = drive.jobId) }}">View Applications</a>
                     
-                    <a href = "{{ url_for('closeDrive', jobId = drive.jobId) }}">Mark as Complete</a>
+                    <a class = "btn btn-primary" href = "{{ url_for('closeDrive', companyId = companyId, jobId = drive.jobId) }}">Mark as Complete</a>
                     
                 </td>
             </tr>
@@ -71,5 +73,48 @@
             {% endfor %}
         </table>
         </div>
+        {% if selectedDrive %}
+        <div class = "modal-overlay" tabindex = -1 id = "viewDriveModal">
+            <div class = "modal-box">
+                    <h3>
+                        Placement Drive Details
+                    </h3>
+                    <div>
+                        <h2>{{ selectedDrive.driveName }}</h2>
+                        <p><b>Job Title: </b>{{ selectedDrive.positionOpen }}</p>
+                        <p><b>Company: </b>{{ selectedDrive.company.companyName }}</p>
+                        <p><b>Description: </b>{{ selectedDrive.description }}</p>
+                        <p><b>Skills required: </b>{{ selectedDrive.skillsRequired }}</p>
+                        <p><b>Salary: </b>{{ selectedDrive.salary }}</p>
+                    </div>
+                    <a href="{{ url_for('showCompanyDrives', companyId = companyId) }}" class="btn btn-danger">Back</a>
+                </div>
+    
+            
+        </div>
+       
+        {% endif %}
     </body>
 </html>
+<style>
+    .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+
+.modal-box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 500px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+</style>

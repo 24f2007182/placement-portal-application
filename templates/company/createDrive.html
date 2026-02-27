@@ -7,21 +7,21 @@
     </head>
     <body>
         <nav class="navbar navbar-expand-lg px-4">
-        <a class="navbar-brand" href="{{ url_for('showCompanyDash') }}">Placement Portal</a>
+        <a class="navbar-brand" href="{{ url_for('showCompanyDash', companyId = companyId) }}">Placement Portal</a>
 
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDash') }}">Dashboard</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanyDash', companyId = companyId) }}">Dashboard</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives') }}">Existing Drives</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives', companyId = companyId) }}">Existing Drives</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('createDrive') }}">Create New Drive</a>
+                    <a class = "nav-link" href = "{{ url_for('createDrive', companyId = companyId) }}">Create New Drive</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications') }}">View Applications</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications', companyId = companyId) }}">View Applications</a>
                 </li>
                 <li class = "nav-item">
                     <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Logout</a>
@@ -30,7 +30,7 @@
         </div>
     </nav>
         <h2>Create new Job Position</h2>
-        <form method = "POST" action = "/company/{{ company.companyId }}/createDrive">
+        <form method = "POST" action = "/company/{{ companyId }}/createDrive">
             <div class = "d-flex flex-column gap-3 m-2">
             <div class = "row">
                 <div class = "col-md-4">
@@ -74,7 +74,7 @@
             <div class="row">
             <div class = "col-md-4">
             <button type="submit" class = "btn btn-success">Submit</button>
-            <a href = "/company/{{company.companyId}}/dashboard" class = "btn btn-danger">Cancel</a>
+            <a href = "/company/{{companyId}}/dashboard" class = "btn btn-danger">Cancel</a>
             </div>
             </div>
         </form>
