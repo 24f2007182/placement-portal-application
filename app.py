@@ -1,7 +1,9 @@
 import io
+import os
 
 from flask import Flask, render_template, redirect, send_file, url_for,request , flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from seed_ata import seed
 from models import db,Student, Company, Admin, JobPosition, Application, User, Placement
 
@@ -213,6 +215,8 @@ def updateApplicationStatus(companyId, applicationId):
     updatedStatus = request.form['status']
     application = Application.query.filter_by(applicationId = applicationId).first_or_404()
     application.status = updatedStatus
+    newPlacement = Placement(applicationId = application.applicationId, package = application.job.salary, placedOn = datetime.utcnow )
+    db.session.add(newPlacement)
     db.session.commit()
     return redirect(url_for('showCompanyApplications', companyId = companyId))
 
@@ -241,6 +245,114 @@ def viewResume(companyId,studentId):
 def showStudentDash(studentId):
     student = Student.query.filter_by(studentId = studentId).first()
     return render_template('./student/dashboard.html', student = student)
+@app.route('/registerStudent', methods = ['GET', 'POST'])
+def registerStudent():
+    if request.method == 'POST':
+        username = request.form['username']
+        password =request.form['password']
+        name = request.form['name']
+        contactNumber = request.form['contact']
+        department = request.form['dept']
+        resume = request.files['resume']
+        experience = request.form['exp']
+        skills = request.form['skills']
+        
+        resumePath = f'uploads/{resume.filename}'
+        resume.save(os.path.join(app.root_path, 'static', resumePath))
 
+        user = User(username = username, passwordHash = password, role = "student", active = True)
+        db.session.add(user)
+        db.session.commit()
+
+        student = Student(userId = user.userId, name = name,contactNumber = contactNumber, department = department, experience = experience, skills = skills, resume = resume )
+        db.session.add(student)
+        db.session.commit()
+        
+        return render_template('index.html')
+    render_template('registerStudent.html')
+
+    @app.route('/student/<int:studentId>/dashboard')
+    def showStudentDashboard(studentId):
+        student = Student.query.filter_by(studentId = studentId).first()
+        drives = JobPosition.query.join.filter(
+            Company.approved == True, JobPosition.active == True
+        ).all()
+        viewDriveId = request.args.get('viewDriveId')
+        selectedDrive = None
+        if viewDriveId:
+            selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
+        companies = Company.query.filter(Company.approved == True).all()
+        applications = Application.query.filter_by(studentId = studentId).all()
+
+        return (render_template('./student/dashboardd.html',selectedDrive = selectedDrive, applications = applications, student = student, companies = companies,drives = drives))
+    
+    @app.route('student/<int:studentId>/search')
+    def searchPostion(studentId):
+        search = request.args.get('search')
+        jobs = JobPosition.query.filter(
+            Company.companyName.ilike(f'%{search}%') |
+            JobPosition.positionOpen.ilike(f'%{search}%') | 
+            JobPosition.skillsRequired.ilike(f'%{search}%')).all()
+
+        return render_template('viewPositions.html', studentId = studentId, drives = jobs)
+        
+    @app.route('./student/<int:studentId>/apply/<int:jobId>')
+    def applyJob(studentId, jobId):
+        application = Application(studentId = studentId, jobId =jobId)
+        db.session.add(application)
+        db.session.commit()
+        return render_template('./student/viewJobs.html')
+    
+    @app.route('/student/<int:studentId/viewJobs/<int:companyId>')
+    def viewJobs(studentId, companyId):
+        search = request.args.get('search')
+        if search:
+            drives = JobPosition.query.filter(
+                Company.companyName.ilike(f'%{search}%') |
+                JobPosition.positionOpen.ilike(f'%{search}%') | 
+                JobPosition.skillsRequired.ilike(f'%{search}%')).all()
+        drives = JobPosition.query.filter_by(companyId = companyId).all()
+        company = Company.query.filter_by(companyId = companyId).first()
+        viewDriveId = request.args.get('viewDriveId')
+        selectedDrive = None
+        if viewDriveId:
+            selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
+
+        return render_template('./students/viewJobs.html',selectedDrive = selectedDrive, company = company,studentId =studentId, drives = drives)
+    
+    @app.route('/student/<int:studentId>/history')
+    def viewHistory(studentId):
+        applications = Application.query.filter_by(studentId = studentId).all()
+        student = Student.query.filter_by(studentId = studentId).first()
+
+        return render_template('./student/history.html', studnet = student, applications = applications)
+
+    @app.route('/student/<int:studentId>/editProfile')
+    def editProfile(studentId):
+        if request.method == 'POST':
+            student = Student.query.filter_by(studentId = studentId).first()
+            student.name = request.form['name']
+            student.contactNumber = request.form['contact']
+            student.department = request.form['dept']
+            student.experience = request.form['exp']
+            student.skills = request.form['skills']
+            resume = request.files.get('resume')
+
+            if resume and resume.filename != "":
+                filename = resume.filename
+                resumePath = f'uploads/{filename}'
+                resume.save(os.path.join(app.root_path, 'static', resumePath))
+                student.resume = resumePath
+                username = request.form['username']
+                if username:
+                    user.username = username
+                newPassword = request.form.get('password')
+                if newPassword:
+                    user.passwordHash = newPassword
+                db.session.commit()
+                flash("Profile updated successfully!")
+                return redirect(url_for('studentDashboard', studentId=studentId))
+
+             
 if __name__ == "__main__":
     app.run(debug=True)
