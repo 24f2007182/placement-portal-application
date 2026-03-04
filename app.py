@@ -241,10 +241,6 @@ def viewResume(companyId,studentId):
     return send_file(student.resume, as_attachment=False)
 
 #students login routes 
-@app.route('/student/<int:studentId>/dashboard')
-def showStudentDash(studentId):
-    student = Student.query.filter_by(studentId = studentId).first()
-    return render_template('./student/dashboard.html', student = student)
 @app.route('/registerStudent', methods = ['GET', 'POST'])
 def registerStudent():
     if request.method == 'POST':
@@ -269,90 +265,117 @@ def registerStudent():
         db.session.commit()
         
         return render_template('index.html')
-    render_template('registerStudent.html')
+    return render_template('registerStudent.html')
 
-    @app.route('/student/<int:studentId>/dashboard')
-    def showStudentDashboard(studentId):
-        student = Student.query.filter_by(studentId = studentId).first()
-        drives = JobPosition.query.join.filter(
-            Company.approved == True, JobPosition.active == True
-        ).all()
-        viewDriveId = request.args.get('viewDriveId')
-        selectedDrive = None
-        if viewDriveId:
-            selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
-        companies = Company.query.filter(Company.approved == True).all()
-        applications = Application.query.filter_by(studentId = studentId).all()
+@app.route('/student/<int:studentId>/dashboard')
+def showStudentDashboard(studentId):
+    student = Student.query.filter_by(studentId = studentId).first()
+    drives = JobPosition.query.filter(
+        Company.approved == True, JobPosition.active == True
+    ).all()
+    viewDriveId = request.args.get('viewDriveId')
+    selectedDrive = None
+    if viewDriveId:
+        selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
+    companies = Company.query.filter(Company.approved == True).all()
+    applications = Application.query.filter_by(studentId = studentId).all()
+    notifications = Application.query.filter(
+        Application.studentId == studentId,
+        Application.status != 'Applied').order_by(Application.appliedOn.desc()).all()
 
-        return (render_template('./student/dashboardd.html',selectedDrive = selectedDrive, applications = applications, student = student, companies = companies,drives = drives))
+    return (render_template('./student/dashboard.html',notifications = notifications, selectedDrive = selectedDrive, applications = applications, student = student, companies = companies,drives = drives))
+
+@app.route('/student/<int:studentId>/viewJobs', methods = ['POST'])
+def searchPostion(studentId):
+    search = request.form.get('search')
+    print(search)
+    companyId = request.args.get('companyId')
+    jobs = JobPosition.query.join(Company).filter(
+        Company.companyName.ilike(f'%{search}%') |
+        JobPosition.positionOpen.ilike(f'%{search}%') | 
+        JobPosition.skillsRequired.ilike(f'%{search}%')).all()
+    company = None 
+    if companyId:
+        company = Company.query.filter_by(companyId = companyId).first()
+    print(jobs,studentId)
+    return render_template('./student/viewJobs.html', studentId = studentId, company = company,drives = jobs)
     
-    @app.route('student/<int:studentId>/search')
-    def searchPostion(studentId):
-        search = request.args.get('search')
-        jobs = JobPosition.query.filter(
-            Company.companyName.ilike(f'%{search}%') |
-            JobPosition.positionOpen.ilike(f'%{search}%') | 
-            JobPosition.skillsRequired.ilike(f'%{search}%')).all()
-
-        return render_template('viewPositions.html', studentId = studentId, drives = jobs)
-        
-    @app.route('./student/<int:studentId>/apply/<int:jobId>')
-    def applyJob(studentId, jobId):
+@app.route('/student/<int:studentId>/apply/<int:jobId>')
+def applyJob(studentId, jobId):
+    app = Application.query.filter_by(studentId = studentId ,  jobId = jobId).first()
+    companyId = request.args.get('companyId')
+    company = None 
+    if companyId:
+        company = Company.query.filter_by(companyId = companyId).first()
+    job = JobPosition.query.filter_by(jobId = jobId).first()
+    if app == None:
         application = Application(studentId = studentId, jobId =jobId)
         db.session.add(application)
         db.session.commit()
-        return render_template('./student/viewJobs.html')
-    
-    @app.route('/student/<int:studentId/viewJobs/<int:companyId>')
-    def viewJobs(studentId, companyId):
-        search = request.args.get('search')
-        if search:
-            drives = JobPosition.query.filter(
-                Company.companyName.ilike(f'%{search}%') |
-                JobPosition.positionOpen.ilike(f'%{search}%') | 
-                JobPosition.skillsRequired.ilike(f'%{search}%')).all()
+        return redirect(url_for('viewJobs', studentId = studentId))
+    else:
+        flash("Already applied for the drive!", 'error')
+        return redirect(url_for('viewJobs' , studentId = studentId))
+
+@app.route('/student/<int:studentId>/viewJobs')
+def viewJobs(studentId):
+    companyId = request.args.get('companyId')
+    search = request.args.get('search')
+    if search:
+        drives = JobPosition.query.filter(
+            Company.companyName.ilike(f'%{search}%') |
+            JobPosition.positionOpen.ilike(f'%{search}%') | 
+            JobPosition.skillsRequired.ilike(f'%{search}%')).all()
+    if companyId:
         drives = JobPosition.query.filter_by(companyId = companyId).all()
-        company = Company.query.filter_by(companyId = companyId).first()
-        viewDriveId = request.args.get('viewDriveId')
-        selectedDrive = None
-        if viewDriveId:
-            selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
+    else:
+        drives = JobPosition.query.all()
 
-        return render_template('./students/viewJobs.html',selectedDrive = selectedDrive, company = company,studentId =studentId, drives = drives)
-    
-    @app.route('/student/<int:studentId>/history')
-    def viewHistory(studentId):
-        applications = Application.query.filter_by(studentId = studentId).all()
+    company = Company.query.filter_by(companyId = companyId).first()
+    viewDriveId = request.args.get('viewDriveId')
+    selectedDrive = None
+    if viewDriveId:
+        selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
+
+    return render_template('./student/viewJobs.html',selectedDrive = selectedDrive, company = company,studentId =studentId, drives = drives)
+
+@app.route('/student/<int:studentId>/viewHistory')
+def viewHistory(studentId):
+    applications = Application.query.filter_by(studentId = studentId).all()
+    student = Student.query.filter_by(studentId = studentId).first()
+
+    return render_template('./student/viewHistory.html', student = student, applications = applications)
+
+@app.route('/student/<int:studentId>/editProfile', methods = ['GET','POST'])
+def editProfile(studentId):
+    if request.method == 'GET':
+        student = Student.query.filter_by(studentId = studentId).first_or_404()
+        return render_template('./student/editProfile.html', student = student)
+    if request.method == 'POST':
         student = Student.query.filter_by(studentId = studentId).first()
+        student.name = request.form.get('name')
+        student.contactNumber = request.form.get('contact')
+        student.department = request.form.get('dept')
+        student.experience = request.form.get('exp')
+        student.skills = request.form.get('skills')
+        resume = request.files.get('resume')
 
-        return render_template('./student/history.html', studnet = student, applications = applications)
-
-    @app.route('/student/<int:studentId>/editProfile')
-    def editProfile(studentId):
-        if request.method == 'POST':
-            student = Student.query.filter_by(studentId = studentId).first()
-            student.name = request.form['name']
-            student.contactNumber = request.form['contact']
-            student.department = request.form['dept']
-            student.experience = request.form['exp']
-            student.skills = request.form['skills']
-            resume = request.files.get('resume')
-
-            if resume and resume.filename != "":
-                filename = resume.filename
-                resumePath = f'uploads/{filename}'
-                resume.save(os.path.join(app.root_path, 'static', resumePath))
-                student.resume = resumePath
-                username = request.form['username']
-                if username:
-                    user.username = username
-                newPassword = request.form.get('password')
-                if newPassword:
-                    user.passwordHash = newPassword
-                db.session.commit()
-                flash("Profile updated successfully!")
-                return redirect(url_for('studentDashboard', studentId=studentId))
-
+        if resume and resume.filename != "":
+            filename = resume.filename
+            resumePath = f'resumes/{filename}'
+            resume.save(os.path.join(app.root_path, 'static', resumePath))
+            student.resume = resumePath
+            username = request.form['username']
+            if username:
+                student.user.username = username
+            newPassword = request.form.get('password')
+            if newPassword:
+                student.user.passwordHash = newPassword
+            db.session.commit()
+        db.session.commit()
+        flash("Profile updated successfully!")
+        return redirect(url_for('editProfile', studentId = studentId))
+ 
              
 if __name__ == "__main__":
     app.run(debug=True)
