@@ -6,21 +6,21 @@
     </head>
     <body>
     <nav class="navbar navbar-expand-lg px-4">
-        <a class="navbar-brand" href="{{ url_for('showAdminDash') }}">Placement Portal</a>
+        <a class="navbar-brand" href="{{ url_for('showAdminDash', adminId = adminId) }}">Placement Portal</a>
 
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showAdminDash') }}">Dashboard</a>
+                    <a class = "nav-link" href = "{{ url_for('showAdminDash', adminId = adminId) }}">Dashboard</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanies') }}">Company Management</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanies', adminId = adminId) }}">Company Management</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showStudents') }}">Student Management</a>
+                    <a class = "nav-link" href = "{{ url_for('showStudents', adminId = adminId) }}">Student Management</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showDrives') }}">Placement Drive</a>
+                    <a class = "nav-link" href = "{{ url_for('showDrives', adminId = adminId) }}">Placement Drive</a>
                 </li>
                 <li class = "nav-item">
                     <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Logout</a>
@@ -58,7 +58,7 @@
                         {% endif %}
                     </td>
                     <td>
-                    <a href="{{ url_for('togglestudent', userId = student.user.userId) }}">
+                    <a href="{{ url_for('togglestudent', userId = student.user.userId, adminId = adminId) }}">
                         {% if student.user.active %}
                             Blacklist
                         {% else %}

@@ -93,7 +93,7 @@
                         <p><b>Company: </b>{{ selectedApplication.job.company.companyName }}</p>
                         <p><b>Position: </b>{{ selectedApplication.job.positionOpen }}</p>
                     </div>
-                    <a href="{{ url_for('viewResume', companyId = companyId,studentId = selectedApplication.student.studentId) }}" target="_blank">View Resume</a>
+                    <a href="{{ url_for('viewResume',studentId = selectedApplication.student.studentId) }}" target="_blank">View Resume</a>
                     <div>
                         <form action="/company/{{companyId}}/viewApplications/{{selectedApplication.applicationId}}" method = "POST">
                         <select name = "status" class="form-select mb-2" required>

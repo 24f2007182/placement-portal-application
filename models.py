@@ -1,16 +1,20 @@
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime 
 
 
 db = SQLAlchemy()
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
     userId = db.Column(db.Integer, autoincrement = True, primary_key = True )
-    username = db.Column(db.String, nullable = False)
+    username = db.Column(db.String, unique = True, nullable = False)
     passwordHash = db.Column(db.String , nullable = False)
     role = db.Column(db.String, nullable = False)
     active = db.Column(db.Boolean, nullable = False, default = True)
-
+    
+    def get_id(self):
+        return str(self.userId)
+    
     student = db.relationship('Student', back_populates = "user", uselist = False, cascade = "all, delete-orphan")
     admin = db.relationship('Admin', back_populates = "user", uselist = False, cascade = "all, delete-orphan")
     company = db.relationship('Company', back_populates = "user", uselist = False, cascade = "all, delete-orphan")

@@ -7,21 +7,21 @@
     </head>
     <body class = "p-6">
     <nav class="navbar navbar-expand-lg px-4">
-        <a class="navbar-brand" href="{{ url_for('showAdminDash', ) }}">Placement Portal</a>
+        <a class="navbar-brand" href="{{ url_for('showAdminDash', adminId = adminId ) }}">Placement Portal</a>
 
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showAdminDash') }}">Dashboard</a>
+                    <a class = "nav-link" href = "{{ url_for('showAdminDash', adminId = adminId) }}">Dashboard</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanies') }}">Company Management</a>
+                    <a class = "nav-link" href = "{{ url_for('showCompanies', adminId = adminId) }}">Company Management</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showStudents') }}">Student Management</a>
+                    <a class = "nav-link" href = "{{ url_for('showStudents', adminId = adminId) }}">Student Management</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showDrives') }}">Placement Drive</a>
+                    <a class = "nav-link" href = "{{ url_for('showDrives', adminId = adminId) }}">Placement Drive</a>
                 </li>
                 <li class = "nav-item">
                     <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Logout</a>
@@ -49,9 +49,9 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a class="btn btn-primary" href = "{{ url_for('showDrives', viewDriveId = drive.jobId) }}">View Details</a>
+                    <a class="btn btn-primary" href = "{{ url_for('showDrives', viewDriveId = drive.jobId, adminId = adminId) }}">View Details</a>
                     {% if drive.active %}
-                    <a href = "{{ url_for('completeDrive', jobId = drive.jobId) }}">Mark as Complete</a>
+                    <a href = "{{ url_for('completeDrive', jobId = drive.jobId, adminId = adminId) }}">Mark as Complete</a>
                     {% endif %}
                 </td>
             </tr>
@@ -73,7 +73,7 @@
                         <p><b>Skills required: </b>{{ selectedDrive.skillsRequired }}</p>
                         <p><b>Salary: </b>{{ selectedDrive.salary }}</p>
                     </div>
-                    <a href="{{ url_for('showDrives') }}" class="btn btn-danger">Back</a>
+                    <a href="{{ url_for('showDrives', adminId = adminId) }}" class="btn btn-danger">Back</a>
                 </div>
     
             
@@ -102,7 +102,7 @@
                 <td>{{ application.job.driveName }}</td>
                 <td>{{ application.job.company.companyName }}</td>
                 <td>{{ application.appliedOn.strftime(' %d %M %Y') }}</td>
-                <td><a href = "{{url_for('showDrives', viewAppId = application.applicationId)}}">View Details</a></td>
+                <td><a href = "{{url_for('showDrives', viewAppId = application.applicationId, adminId = adminId)}}">View Details</a></td>
             </tr>
             {% endfor %}
         </table>
@@ -121,8 +121,8 @@
                         <p><b>Position: </b>{{ selectedApplication.job.positionOpen }}</p>
                     </div>
                 <div class="modal-footer">
-                    <button>View Resume</button>
-                    <a href="{{ url_for('showDrives') }}" class="btn btn-danger">Close</a>
+                    <a href="{{ url_for('viewResume', studentId = selectedApplication.studentId )}}" target="_blank">View Resume</a>
+                    <a href="{{ url_for('showDrives', adminId = adminId) }}" class="btn btn-danger">Close</a>
                 </div>
             </div>
         </div>
