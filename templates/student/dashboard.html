@@ -23,7 +23,7 @@
                     <a class = "nav-link" href = "{{ url_for('editProfile', studentId = student.studentId) }}">Edit Profile</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Logout</a>
+                    <a class = "nav-link text-danger" href = "{{ url_for('logout') }}">Logout</a>
                 </li>
             </ul>
         </div>
@@ -77,7 +77,7 @@
                     </p>
 
                     <small class="text-muted">
-                        Updated on: {{ note.appliedOn.strftime('%d %b %Y') }}
+                        Updated on: {{ note.appliedOn.strftime('%d-%b-%Y') }}
                     </small>
                 </div>
             {% endfor %}
@@ -103,15 +103,15 @@
                 <th>Actions</th>
             </tr>
             {%  for application in applications %}
-            {% if application.job.active %}
+            
             <tr>
                 <td>{{ application.applicationId }}</td>
                 <td> {{ application.job.driveName }}</td>
                 <td>{{ application.job.company.companyName }}</td>
-                <td> {{ application.appliedOn }} </td>
-                <td><a href = "{{ url_for('showStudentDashboard', studentId = student.studentId, selectedDrive = application.jobId)}}">View</a></td>
+                <td> {{ application.appliedOn.strftime('%d-%b-%Y') }} </td>
+                <td><a href = "{{ url_for('showStudentDashboard', studentId = student.studentId, viewDriveId = application.jobId)}}">View</a></td>
             </tr>
-            {% endif %}
+            
             {% endfor %}
         </table>
     {% if selectedDrive %}
@@ -128,7 +128,7 @@
                         <p><b>Skills required: </b>{{ selectedDrive.skillsRequired }}</p>
                         <p><b>Salary: </b>{{ selectedDrive.salary }}</p>
                     </div>
-                    <a href="{{ url_for('showCompanyDrives', companyId = companyId) }}" class="btn btn-danger">Back</a>
+                    <a href="{{ url_for('showStudentDashboard', studentId = student.studentId) }}" class="btn btn-danger">Back</a>
                 </div>
     
             

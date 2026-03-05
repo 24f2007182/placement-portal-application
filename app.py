@@ -1,7 +1,7 @@
 from functools import wraps
 import os
 from flask_security import login_required
-from flask_login import LoginManager, current_user, login_user
+from flask_login import LoginManager, current_user, login_user, logout_user
 from flask import Flask, abort, render_template, redirect, send_file, url_for,request , flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -14,6 +14,7 @@ app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///placementapp.db'
 app.config['SECRET_KEY'] = 'da1417b94cc6998e458868c66d8d4f85f8bef30762605829'
+
 UPLOAD_FOLDER = 'static/resumes'
 
 loginManager = LoginManager()
@@ -57,6 +58,13 @@ def login():
             return redirect(url_for("redirectDashboard"))
         flash("Invalid Credentials","danger")
     return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("Logged out user successfully!", "success")
+    return redirect(url_for('index'))
 
 @app.route('/redirect')
 @login_required
@@ -124,7 +132,7 @@ def toggleCompany(adminId, userId):
         user.active = False
         db.session.commit()
         flash('Company blacklisted successfully!!')
-        return redirect(url_for('showCompanies'))
+        return redirect(url_for('showCompanies',adminId = adminId))
     else:
         user.active = True
         db.session.commit()
@@ -145,7 +153,7 @@ def showStudents(adminId):
 @app.route('/admin/<int:adminId>/students/<int:userId>/toggleStudent')
 @role_required('Admin')
 def togglestudent(adminId, userId):
-    user = User.query.filter_by(userId = userId)
+    user = User.query.filter_by(userId = userId).first()
     if user.active == True:
         user.active = False
         db.session.commit()
@@ -251,7 +259,7 @@ def showCompanyApplications(companyId):
     if request.method == "POST":
         jobId = request.form['jobId']
         statusVal = None
-        statusVal = request.form['statusVal']
+        statusVal = request.form.get('statusVal')
         viewAppId = request.args.get("viewAppId")
         selectedApplication = None
         drives = JobPosition.query.filter_by(companyId = companyId).all()
@@ -274,7 +282,7 @@ def updateApplicationStatus(companyId, applicationId):
     updatedStatus = request.form['status']
     application = Application.query.filter_by(applicationId = applicationId).first_or_404()
     application.status = updatedStatus
-    newPlacement = Placement(applicationId = application.applicationId, package = application.job.salary, placedOn = datetime.utcnow )
+    newPlacement = Placement(applicationId = application.applicationId, package = application.job.salary, placedOn = datetime.now() )
     db.session.add(newPlacement)
     db.session.commit()
     return redirect(url_for('showCompanyApplications', companyId = companyId))
@@ -311,13 +319,15 @@ def registerCompany():
         email = request.form.get('email')
         description = request.form.get('description')
         industry = request.form.get('industry')
-        user = User(username = username, password = generate_password_hash(password), role = 'Company')
+        user = User(username = username, passwordHash = generate_password_hash(password), role = 'Company')
         db.session.add(user)
-        company = Company(userId = user.userId, companyName = name, industry = industry, description = description, email = email)
+        db.session.commit()
+
+        company = Company(userId = user.userId, companyName = name, industry = industry, description = description, companyEmail = email)
         db.session.add(company)
         db.session.commit()
         flash('Regiestered Company Successfully! You will be able to login pending admin approval.')
-        return redirect(url_for('home'))
+        return redirect(url_for('index'))
     return render_template('registerCompany.html')
 
 #students login routes 
@@ -334,16 +344,20 @@ def registerStudent():
         experience = request.form['exp']
         skills = request.form['skills']
         
-        resumePath = f'uploads/{resume.filename}'
+        resumePath = f'resumes/{resume.filename}'
         resume.save(os.path.join(app.root_path, 'static', resumePath))
+        userCheck = User.query.filter_by(username = username).first()
 
-        user = User(username = username, passwordHash = generate_password_hash(password), role = "student", active = True)
-        db.session.add(user)
-        db.session.commit()
+        if not userCheck:
+            user = User(username = username, passwordHash = generate_password_hash(password), role = "student", active = True)
+            db.session.add(user)
+            db.session.commit()
+            student = Student(userId = user.userId, name = name,contactNumber = contactNumber, department = department, experience = experience, skills = skills, resume = resumePath )
+            db.session.add(student)
+            db.session.commit()
 
-        student = Student(userId = user.userId, name = name,contactNumber = contactNumber, department = department, experience = experience, skills = skills, resume = resume )
-        db.session.add(student)
-        db.session.commit()
+        else:
+            flash("Username already exists. Please choose another", "danger")
         
         return render_template('index.html')
     return render_template('registerStudent.html')
@@ -363,7 +377,7 @@ def showStudentDashboard(studentId):
     applications = Application.query.filter_by(studentId = studentId).all()
     notifications = Application.query.filter(
         Application.studentId == studentId,
-        Application.status != 'Applied').order_by(Application.appliedOn.desc()).all()
+        Application.status != 'Applied').order_by(Application.appliedOn.asc()).all()
 
     return (render_template('./student/dashboard.html',notifications = notifications, selectedDrive = selectedDrive, applications = applications, student = student, companies = companies,drives = drives))
 
