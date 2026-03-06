@@ -5,6 +5,8 @@ from flask_login import LoginManager, current_user, login_user, logout_user
 from flask import Flask, abort, render_template, redirect, send_file, url_for,request , flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
+from sqlalchemy import String, cast
 from seed_data import seed
 from werkzeug.security import check_password_hash, generate_password_hash
 from models import db,Student, Company, Admin, JobPosition, Application, User, Placement
@@ -29,7 +31,7 @@ with app.app_context():
 
 @loginManager.user_loader
 def load_user(userId):
-    return User.query.get(int(userId))
+    return db.session.get(User, int(userId))
 
 def role_required(role):
     def wrapper(func):
@@ -139,16 +141,34 @@ def toggleCompany(adminId, userId):
         flash('Company approved successfully!!')
         return redirect(url_for('showCompanies', adminId = adminId))
     
-@app.route('/admin/<int:adminId>/students', methods = ['GET'])
+@app.route('/admin/<int:adminId>/students', methods = ['GET','POST'])
 @role_required('Admin')
 def showStudents(adminId):
-    if request.method == 'GET':
-        search = request.args.get('search')
+    drives = JobPosition.query.all()
+    students = Student.query.all()
+    applications = Application.query.all()
+    selectedApplication = None
+
+    if request.method == 'POST':
+        search = request.form.get('search')
+        jobId = request.form.get('jobId')
+        statusVal = request.form.get('statusVal')
+        
+        if jobId:
+            query = Application.query.filter_by(jobId = jobId)
+            if statusVal:
+                    query = query.filter_by(status = statusVal)
+            applications = query.all()
+                      
         if search:
-            students = Student.query.filter((Student.name.ilike(f"%{search}")) | Student.studentId.ilike(f"%{search}%") | Student.contactNumber.ilike(f"%{search}%")).all()
-        else:
-            students = Student.query.all()
-        return render_template('./admin/students.html',adminId = adminId, students = students)
+            students = Student.query.filter((Student.name.ilike(f"%{search}%")) | cast(Student.studentId, String).ilike(f"%{search}%") | Student.contactNumber.ilike(f"%{search}%")).all()
+                
+        return render_template('./admin/students.html',drives = drives,adminId = adminId,selectedApplication = selectedApplication, applications = applications,students = students)
+    viewAppId = request.args.get("viewAppId")
+    if viewAppId:
+        selectedApplication = Application.query.filter_by(applicationId = viewAppId).first()
+    return render_template('./admin/students.html',drives = drives,adminId = adminId,applications=applications, selectedApplication = selectedApplication, students = students)
+    
        
 @app.route('/admin/<int:adminId>/students/<int:userId>/toggleStudent')
 @role_required('Admin')
@@ -210,7 +230,8 @@ def showCompanyDash(companyId):
             applications.append(application)
             placements.append(placement)
         totalApplications = len(applications)
-        return render_template('./company/dashboard.html', company = company, drives = drives, applications = applications, totalApplications = totalApplications, totalDrives = totalDrives)
+        totalPlacements = len(placements)
+        return render_template('./company/dashboard.html',totalPlacements = totalPlacements, company = company, drives = drives, applications = applications, totalApplications = totalApplications, totalDrives = totalDrives)
 
 @app.route('/company/<int:companyId>/createDrive', methods = ['GET', 'POST'])
 @role_required('Company')
@@ -282,10 +303,15 @@ def updateApplicationStatus(companyId, applicationId):
     updatedStatus = request.form['status']
     application = Application.query.filter_by(applicationId = applicationId).first_or_404()
     application.status = updatedStatus
-    newPlacement = Placement(applicationId = application.applicationId, package = application.job.salary, placedOn = datetime.now() )
-    db.session.add(newPlacement)
+    if updatedStatus == 'Placed':
+        
+        newPlacement = Placement(applicationId = application.applicationId, package = application.job.salary, placedOn = datetime.now() )
+        db.session.add(newPlacement)
+
     db.session.commit()
+        
     return redirect(url_for('showCompanyApplications', companyId = companyId))
+    
 
 @app.route('/company/<int:companyId>/viewDrives')
 @role_required('Company')

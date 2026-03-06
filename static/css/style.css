@@ -1,0 +1,89 @@
+
+body{
+    font-family: Georgia, "Times New Roman", Times, serif;
+    background-color: #c894fc;
+    color: #ffffff;
+    margin: 0;
+}
+
+
+nav{
+    background-color: #7e3ebe;
+    padding: 10px 20px;
+}
+
+.navbar-brand{
+    color: white;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.nav-link{
+    color: #ffffff;
+    margin-left: 15px;
+}
+
+.nav-link:hover{
+    color: #e6d5ff;
+}
+
+
+.content{
+    margin: 25px;
+}
+
+
+.table{
+    background-color: white;
+    color: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+.table th{
+    background-color: #7e3ebe;
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    text-align: left;
+}
+
+.table td{
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+
+.table-striped tbody tr:nth-of-type(odd){
+    background-color: #f7f3ff;
+}
+
+.table tbody tr:hover{
+    background-color: #efe4ff;
+    transition: 0.2s ease;
+}
+
+.table a{
+    color: #7e3ebe;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.table a:hover{
+    text-decoration: underline;
+}
+
+footer{
+    margin-top: 50px;
+    text-align: center;
+    padding: 15px;
+    background-color: #7e3ebe;
+    color: white;
+}
+
+.modal-box{
+    font-family: Georgia, "Times New Roman", Times, serif;
+}
