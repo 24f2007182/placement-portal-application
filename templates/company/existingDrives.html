@@ -31,49 +31,55 @@
             </ul>
         </div>
     </nav>
+    <div class ="content">
+{% if activeDrives %}
     <h2>Ongoing Drives</h2>
-<div style = "max-height: 400px; overflow-y: auto;">
+    
+<div class="table-container">
         <table class = "table table-striped"> 
             <tr>
                 <th>ID</th>
                 <th>Drive Name</th>
                 <th>Actions</th>
             </tr>
-            {%  for drive in drives %}
-            {% if drive.active %}
+            {%  for drive in activeDrives %}
+            
             <tr>
                 <td>{{ drive.jobId }}</td>
                 <td> {{ drive.driveName }}</td>
                 <td>
-                    <a class="btn btn-primary" href = "{{ url_for('showCompanyDrives', companyId = companyId, viewDriveId = drive.jobId) }}">View Details</a>
+                    <a class="btn" href = "{{ url_for('showCompanyDrives', companyId = companyId, viewDriveId = drive.jobId) }}">View Details</a>
 
-                    <a class="btn btn-primary" href = "{{ url_for('showCompanyApplications', companyId = companyId, jobId = drive.jobId) }}">View Applications</a>
+                    <a class="btn" href = "{{ url_for('showCompanyApplications', companyId = companyId, jobId = drive.jobId) }}">View Applications</a>
                     
-                    <a class = "btn btn-primary" href = "{{ url_for('closeDrive', companyId = companyId, jobId = drive.jobId) }}">Mark as Complete</a>
+                    <a class = "btn" href = "{{ url_for('closeDrive', companyId = companyId, jobId = drive.jobId) }}">Mark as Complete</a>
                     
                 </td>
             </tr>
-            {% endif %}
+            
             {% endfor %}
         </table>
         </div>
+        {% else %}
+        <h2>No Ongoing Drives.</h2>
+        {% endif %}
     <h2>Completed Drives</h2>
-    <div style = "max-height: 400px; overflow-y: auto;">
+    <div class="table-container">
         <table class = "table table-striped"> 
             <tr>
                 <th>ID</th>
                 <th>Drive Name</th>
                 <th>Actions</th>
             </tr>
-            {%  for drive in drives %}
-            {% if drive.active == False %}
+            {%  for drive in completedDrives %}
+        
             <tr>
                 <td>{{ drive.jobId }}</td>
                 <td> {{ drive.driveName }}</td>
-                <td><a class="btn btn-primary" href = "{{ url_for('showCompanyDrives', companyId = companyId, viewDriveId = drive.jobId) }}">View Details</a></td>
+                <td><a class="btn" href = "{{ url_for('showCompanyDrives', companyId = companyId, viewDriveId = drive.jobId) }}">View Details</a></td>
                 
             </tr>
-            {% endif %}
+            
             {% endfor %}
         </table>
         </div>
@@ -98,27 +104,6 @@
         </div>
        
         {% endif %}
+    </div>
     </body>
 </html>
-<style>
-    .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
-}
-
-.modal-box {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    width: 500px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-</style>

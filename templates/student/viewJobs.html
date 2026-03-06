@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="../../static/css/style.css">
     </head>
     <body>
-        <div class="container mt-3">
+        <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}
@@ -41,6 +41,7 @@
             </ul>
         </div>
         </nav>
+        <div class = "content">
         {% if company %}
         <h2> {{ company.companyName }}</h2>
         <h3>Overview</h3>
@@ -48,9 +49,9 @@
         <form method = "POST" action = "/student/{{ studentId }}/viewJobs">
             <label for = "search" class = "form-label">Search For Position: </label>
             <input type = "text" class = "form-control" name = "search"> 
-            <button type ="submit">Search</button>
+            <input class = "form-control" type ="submit">Search</input>
         </form>
-        <div style = "max-height: 400px; overflow-y: auto;">
+        <div class="table-container-student">
         <table class = "table table-striped"> 
             <tr>
             <th>Sr No.</th>
@@ -75,7 +76,7 @@
             <button type ="submit">Search</button>
         </form>
         <h3>Ongoing Drives:</h3>
-        <div style = "max-height: 400px; overflow-y: auto;">
+        <div class="table-container">
         <table class = "table table-striped"> 
             <tr>
                 <th>Sr No.</th>
@@ -118,27 +119,7 @@
         </div>
        
         {% endif %}
+        </div>
     </body>
+    
 </html>
-<style>
-    .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
-}
-
-.modal-box {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    width: 500px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-</style>

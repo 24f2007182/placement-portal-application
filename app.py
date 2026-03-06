@@ -94,7 +94,7 @@ def showAdminDash(adminId):
     totalCompanies = Company.query.count()
     totalJobs = JobPosition.query.count()
     totalApplications = Application.query.count()
-    return render_template('./admin/dashboard.html', adminId = adminId, totalStudents = totalStudents, totalCompanies = totalCompanies, totalJobs = totalJobs, totalApplications = totalApplications)
+    return render_template('./admin/dashboard.html',admin=admin, adminId = adminId, totalStudents = totalStudents, totalCompanies = totalCompanies, totalJobs = totalJobs, totalApplications = totalApplications)
 
 @app.route('/admin/<int:adminId>/companies', methods = ['GET'])
 @role_required('Admin')
@@ -316,12 +316,15 @@ def updateApplicationStatus(companyId, applicationId):
 @app.route('/company/<int:companyId>/viewDrives')
 @role_required('Company')
 def showCompanyDrives(companyId):
-    drives = JobPosition.query.filter_by(companyId = companyId).all()
+    query = JobPosition.query.filter_by(companyId = companyId)
+    activeDrives = query.filter_by(active = True).all()
+    
+    completedDrives = query.filter_by(active = False).all()
     viewDriveId = request.args.get("viewDriveId")
     selectedDrive = None  
     if viewDriveId:
         selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
-    return render_template('./company/existingDrives.html', companyId = companyId, selectedDrive = selectedDrive, drives = drives)
+    return render_template('./company/existingDrives.html', companyId = companyId, selectedDrive = selectedDrive, activeDrives = activeDrives, completedDrives = completedDrives)
 
 @app.route('/company/<int:companyId>/closeDrive/<int:jobId>')
 @role_required('Company')

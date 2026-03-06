@@ -31,10 +31,52 @@
             </ul>
         </div>
     </nav>
-        <div class = "d-flex flex-xl-row p-8">
-        <h3 class="p-8">Total Drives: {{ totalDrives }}</h3>
-        <h3 class="p-8">Total Applications: {{ totalApplications }}</h3>
-        <h3 class="p-8">Total Students Placed: {{ totalPlacements }}</h3>
+ <div class="content">
+    <h1>Welcome Back, {{ company.companyName}}!</h1>
+        <h5 class="mb-3">Overview</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="stat-card">
+                    <div class="stat-label">Total Drives</div>
+                    <div class="stat-value">{{ totalDrives }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="stat-card">
+                    <div class="stat-label">Total Applications</div>
+                    <div class="stat-value">{{ totalApplications }}</div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="stat-card">
+                    <div class="stat-label">Students Placed</div>
+                    <div class="stat-value">{{ totalPlacements }}</div>
+                </div>
+            </div>
+        </div>
+
+        <h5 class="mb-3">Quick Actions</h5>
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <a class="action-card" href="{{ url_for('showCompanyDrives', companyId = company.companyId) }}">
+                    
+                    <div>Existing Drives</div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4">
+                <a class="action-card" href="{{ url_for('createDrive', companyId = company.companyId) }}">
+                    
+                    <div>Create New Drive</div>
+                </a>
+            </div>
+            <div class="col-12 col-md-4">
+                <a class="action-card" href="{{ url_for('showCompanyApplications', companyId = company.companyId) }}">
+                    
+                    <div>View Applications</div>
+                </a>
+            </div>
+        </div>
+
     </div>
     </body>
 </html>

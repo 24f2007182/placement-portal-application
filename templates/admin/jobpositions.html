@@ -29,14 +29,18 @@
             </ul>
         </div>
     </nav>
-    <div style = "max-height: 400px; overflow-y: auto;">
+    <div class ="content">
+
+        <div class="table-container">
         <table class = "table table-striped"> 
+           
             <tr>
                 <th>ID</th>
                 <th>Drive Name</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
+            
             {%  for drive in drives %}
             <tr>
                 <td>{{ drive.jobId }}</td>
@@ -49,7 +53,7 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a class="btn btn-primary" href = "{{ url_for('showDrives', viewDriveId = drive.jobId, adminId = adminId) }}">View Details</a>
+                    <a class="btn" href = "{{ url_for('showDrives', viewDriveId = drive.jobId, adminId = adminId) }}">View Details</a>
                     {% if drive.active %}
                     <a href = "{{ url_for('completeDrive', jobId = drive.jobId, adminId = adminId) }}">Mark as Complete</a>
                     {% endif %}
@@ -59,6 +63,7 @@
             
         </table>
         </div>
+
         {% if selectedDrive %}
         <div class = "modal-overlay" tabindex = -1 id = "viewDriveModal">
             <div class = "modal-box">
@@ -84,7 +89,7 @@
 
 
         <h2> Student Applications: </h2>
-        <div style = "max-height: 400px; overflow-y: auto;">
+        <div class="table-container">
 
         <table class = "table table-striped">
             <tr>
@@ -101,7 +106,7 @@
                 <td>{{ application.student.name }}</td>
                 <td>{{ application.job.driveName }}</td>
                 <td>{{ application.job.company.companyName }}</td>
-                <td>{{ application.appliedOn.strftime(' %d %M %Y') }}</td>
+                <td>{{ application.appliedOn.strftime(' %d-%b-%Y') }}</td>
                 <td><a href = "{{url_for('showDrives', viewAppId = application.applicationId, adminId = adminId)}}">View Details</a></td>
             </tr>
             {% endfor %}
@@ -127,27 +132,6 @@
             </div>
         </div>
         {% endif %}
+    </div>
     </body>
 </html>
-<style>
-    .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
-}
-
-.modal-box {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    width: 500px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-</style>

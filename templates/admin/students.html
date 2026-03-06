@@ -30,13 +30,14 @@
             </ul>
         </div>
     </nav>
+    <div class ="content">
         <h3>Student Management</h3>
         <h2>Registered Students</h2> 
         <form method="POST" action = "/admin/{{adminId}}/students">
-            <input type="text" name="search" placeholder="Search by name, ID or conatct...">
+            <input class="form-control" type="text" name="search" placeholder="Search by name, ID or conatct...">
             <button type="submit">Search</button>
         </form>
-        <div class="table-responsive table-responsive overflow-auto">
+        <div class="table-container">
         <table class = "table table-striped">
             <tr>
                 <th>ID</th>
@@ -91,7 +92,7 @@
                             </select>  
                             <button type="submit">Search</button>
                         </h3>
-            <div style = "max-height: 400px; overflow-y: auto;">
+            <div class="table-container">
 
         <table class = "table table-striped">
             <tr>
@@ -141,36 +142,6 @@
                 </div>
             </div>
         {% endif %}
+        </div>
     </body>
 </html>
-<style>
-    .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
-}
-
-.modal-box {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    width: 500px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-    .table-scroll{
-        max-height: 400px;
-        overflow: auto;
-        border: 1px solid;
-    }
-    .table-scroll th{
-        position: sticky;
-        top: 0;
-    }
-</style>

@@ -29,13 +29,14 @@
             </ul>
         </div>
     </nav>
-    <main class ="content">
+    <div class ="content">
         <h3>Company Management</h3>
         <h2>Approved Companies</h2> 
         <form method="GET" class = "mx-2 my-2">
             <input class="form-control" type="text" name="search" placeholder="Search by name or industry...">
             <button class = "btn btn-primary" type="submit">Search</button>
         </form>
+        <div class="table-container">
         <table class = "table table-striped">
             <tr>
                 <th>ID</th>
@@ -73,8 +74,12 @@
                 {% endif %}
                 {% endfor %}
         </table>
+        </div>
+
 
         <h2>Companies Waiting Approval</h2>
+        <div class="table-conatiner">
+
         <table class = "table table-striped">
             <tr>
                 <th>ID</th>
@@ -114,6 +119,7 @@
                 {% endif %}
                 {% endfor %}
         </table>
-        </main>
+        </div>
+    </div>
     </body>
 </html>

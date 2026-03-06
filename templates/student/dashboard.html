@@ -30,13 +30,15 @@
             </ul>
         </div>
         </nav>
+        <div class="content">
         <h3>Welcome back, {{ student.name }}</h3>
 
         
         <div class = "d-flex flex-column">
         <div class = "row">
-        <div class = "col"  style = "max-height: 400px; overflow-y: auto;">
+        <div class = "col" >
         <h2>Organizations</h2>
+        <div class = "table-container">
         <table class = "table table-striped"> 
             <tr>
                 <th>Sr No.</th>
@@ -54,6 +56,7 @@
         {% endif %}
         {% endfor %}
         </table>
+        </div>
     </div>
     <div class = "col">
     <h2>Application Notifications</h2>
@@ -92,10 +95,10 @@
         </div>
     </div>
     </div>
-    </div>
+    
         
         <h2>Applied Drives</h2>
-        <div style = "max-height: 400px; overflow-y: auto;">
+        <div class="table-container">
         <table class = "table table-striped"> 
             <tr>
                 <th>ID</th>
@@ -116,6 +119,7 @@
             
             {% endfor %}
         </table>
+        </div>
     {% if selectedDrive %}
         <div class = "modal-overlay" tabindex = -1 id = "viewDriveModal">
             <div class = "modal-box">
@@ -137,27 +141,6 @@
         </div>
        
         {% endif %}
+        </div>
     </body>
 </html>
-<style>
-    .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1050;
-}
-
-.modal-box {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    width: 500px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-}
-</style>

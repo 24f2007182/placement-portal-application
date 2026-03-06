@@ -10,7 +10,7 @@
     </head>
     <body>
 
-        <div class="container mt-3">
+        <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% for category, message in messages %}
@@ -45,6 +45,7 @@
             </ul>
         </div>
         </nav>
+        <div class = "content">
         <h2>Update Student Profile</h2>
         <form method = "POST" action = "/student/{{ student.studentId }}/editProfile" enctype="multipart/form-data">
             <div class = "d-flex flex-column gap-3 m-2">
@@ -102,7 +103,7 @@
             </div>
             </div>
         </form>
+        </div>
     </body>
 
-    </body>
 </html>
