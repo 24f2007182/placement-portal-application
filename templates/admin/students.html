@@ -7,6 +7,17 @@
 
     </head>
     <body>
+        <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% set category, message = messages[-1]  %}
+                <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <a href="{{ url_for('clearFlash') }}"><button type="button" class="btn-close" ></button></a>
+                </div>
+            {% endif %}
+        {% endwith %}
+        </div>
     <nav class="navbar navbar-expand-lg px-4">
         <a class="navbar-brand" href="{{ url_for('showAdminDash', adminId = adminId) }}">Placement Portal</a>
 
@@ -31,11 +42,11 @@
         </div>
     </nav>
     <div class ="content">
-        <h3>Student Management</h3>
+        <h1>Student Management</h1>
         <h2>Registered Students</h2> 
         <form method="POST" action = "/admin/{{adminId}}/students">
             <input class="form-control" type="text" name="search" placeholder="Search by name, ID or conatct...">
-            <button type="submit">Search</button>
+            <button class="btn btn-light" type="submit">Search</button>
         </form>
         <div class="table-container">
         <table class = "table table-striped">
@@ -74,7 +85,7 @@
         </table>
         </div>
         <h3>Student Applications</h3>
-        <form method = "POST" action = "/admin/{{ adminId }}/students">
+        <form class="mx-2 my-2" method = "POST" action = "/admin/{{ adminId }}/students">
                         <h3>Drive Name:  
                             <select name="jobId" class="form-select mb-2" required>
                                 
@@ -90,7 +101,7 @@
                                             <option value = "Interview">Interview</option>
                                             <option value = "Rejected">Rejected</option>  
                             </select>  
-                            <button type="submit">Search</button>
+                            <button class="btn btn-light" type="submit">Search</button>
                         </h3>
             <div class="table-container">
 

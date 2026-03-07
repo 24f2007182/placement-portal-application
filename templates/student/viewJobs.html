@@ -6,15 +6,14 @@
         <link rel="stylesheet" href="../../static/css/style.css">
     </head>
     <body>
-        <div class="container">
+        <div class="info-card">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-            {% for category, message in messages %}
+            {% set category, message = messages[-1]  %}
                 <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <a href="{{ url_for('clearFlash') }}"><button type="button" class="btn-close" ></button></a>
                 </div>
-            {% endfor %}
             {% endif %}
         {% endwith %}
         </div>

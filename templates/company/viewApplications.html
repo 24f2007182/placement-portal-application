@@ -31,6 +31,18 @@
             </ul>
         </div>
     </nav>
+            <div class="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% set category, message = messages[-1]  %}
+                <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <a href="{{ url_for('clearFlash') }}"><button type="button" class="btn-close" ></button></a>
+
+                </div>
+            {% endif %}
+        {% endwith %}
+        </div>
     <div class ="content">
 
     <h2>Recieved Applications</h2>

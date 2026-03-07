@@ -12,13 +12,13 @@
 
     </head>
     <body>
-        <div class="container mt-3">
+        <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             {% set category, message = messages[-1]  %}
                 <div class="alert alert-{{ category if category != 'message' else 'info' }} alert-dismissible fade show" role="alert">
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <a href="{{ url_for('clearFlash') }}"><button type="button" class="btn-close" ></button></a>
                 </div>
             {% endif %}
         {% endwith %}
@@ -29,17 +29,18 @@
         <div class="collapse navbar-collapse">
             <ul class="navbar-nav ms-auto">
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "">About Us</a>
+                    <a class = "nav-link" href = "{{ url_for('registerStudent')}}">Student Registration</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link" href = "">Best Practices</a>
+                    <a class = "nav-link" href = "{{ url_for('registerCompany')}}">Company Registration</a>
                 </li>
                 <li class = "nav-item">
-                    <a class = "nav-link text-danger" href = "{{ url_for('index') }}">Login/Sign Up</a>
+                    <a class = "nav-link text-danger" href = "{{ url_for('login') }}">Login/Sign Up</a>
                 </li>
             </ul>
         </div>
     </nav>
+    <div class="content">
         <h2>Create new Company Profile</h2>
         <form method = "POST" action = "/registerCompany">
             <div class = "d-flex flex-column gap-3 m-2">
@@ -81,5 +82,6 @@
             </div>
             </div>
         </form>
+        </div>
     </body>
 </html>

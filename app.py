@@ -2,7 +2,7 @@ from functools import wraps
 import os
 from flask_security import login_required
 from flask_login import LoginManager, current_user, login_user, logout_user
-from flask import Flask, abort, render_template, redirect, send_file, url_for,request , flash
+from flask import Flask, abort, get_flashed_messages, render_template, redirect, send_file, session, url_for,request , flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -38,32 +38,43 @@ def role_required(role):
         @wraps(func)
         @login_required
         def decorated_function(*args, **kwargs):
+        
             if current_user.role != role:
                 abort(403)
-
+            if current_user.active != True:
+                flash("Waiting Admin Approval!", "danger")
             return func(*args,**kwargs)
         return decorated_function
     return wrapper
-
+@app.route('/clearFlash')
+def clearFlash():
+    session.pop('_flashes', None)
+    return redirect(request.referrer)
 @app.route('/login', methods = ['POST','GET'])
 def login():
+
     if request.method == "POST":
+        
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(username = username).first()
         if user and check_password_hash(user.passwordHash ,password):
             if user.role == 'Company':
                 company = Company.query.filter_by(userId = user.userId).first()
-                if not company.approved:
+                if not company.approved or company.user.active == False :
                     flash("Waiting for admin approval","danger")
+                    return redirect(url_for('login'))
             login_user(user)
             return redirect(url_for("redirectDashboard"))
-        flash("Invalid Credentials","danger")
+        else:
+
+            flash("Invalid Credentials","danger")
     return render_template('login.html')
 
 @app.route('/logout')
 @login_required
 def logout():
+
     logout_user()
     flash("Logged out user successfully!", "success")
     return redirect(url_for('index'))
@@ -110,6 +121,7 @@ def showCompanies(adminId):
 @app.route('/admin/<int:adminId>/companies/<int:companyId>/approve')
 @role_required('Admin')
 def approveCompany(adminId,companyId):
+
     company = Company.query.filter_by(companyId = companyId).first_or_404()
     company.approved = True
     db.session.commit()
@@ -119,6 +131,7 @@ def approveCompany(adminId,companyId):
 @app.route('/admin/<int:adminId>/companies/<int:companyId>/reject')
 @role_required('Admin')
 def rejectCompany(adminId, companyId):
+
     company = Company.query.filter_by(companyId = companyId).first_or_404()
     company.approved = False
     db.session.commit()
@@ -129,9 +142,15 @@ def rejectCompany(adminId, companyId):
 @app.route('/admin/<int:adminId>/companies/<int:userId>/toggleCompany')
 @role_required('Admin')
 def toggleCompany(adminId, userId):
+
     user = User.query.filter_by(userId = userId).first()
+    company = Company.query.filter_by(userId = userId).first()
     if user.active == True:
         user.active = False
+        company.approved = False
+        drives = JobPosition.query.filter_by(companyId = company.companyId).all()
+        for drive in drives:
+            drive.active = False
         db.session.commit()
         flash('Company blacklisted successfully!!')
         return redirect(url_for('showCompanies',adminId = adminId))
@@ -173,6 +192,7 @@ def showStudents(adminId):
 @app.route('/admin/<int:adminId>/students/<int:userId>/toggleStudent')
 @role_required('Admin')
 def togglestudent(adminId, userId):
+
     user = User.query.filter_by(userId = userId).first()
     if user.active == True:
         user.active = False
@@ -198,7 +218,9 @@ def showDrives(adminId):
         selectedApplication = Application.query.filter_by(applicationId = viewAppId).first()    
     if viewDriveId:
         selectedDrive = JobPosition.query.filter_by(jobId = viewDriveId).first()
-    drives = JobPosition.query.all()
+    drives = JobPosition.query.join(Company).filter(
+        Company.approved == True, 
+    ).all()
     applications = Application.query.all()
     return(render_template('./admin/jobpositions.html', adminId = adminId, drives = drives, applications = applications, selectedApplication = selectedApplication, selectedDrive = selectedDrive))
 
@@ -236,6 +258,7 @@ def showCompanyDash(companyId):
 @app.route('/company/<int:companyId>/createDrive', methods = ['GET', 'POST'])
 @role_required('Company')
 def createDrive(companyId):
+
     if request.method == 'GET':
         return render_template('./company/createDrive.html', companyId = companyId
         
@@ -341,6 +364,7 @@ def viewResume(studentId):
 
 @app.route('/registerCompany', methods = ['GET', 'POST'])
 def registerCompany():
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -363,6 +387,7 @@ def registerCompany():
 @app.route('/registerStudent', methods = ['GET', 'POST'])
 
 def registerStudent():
+
     if request.method == 'POST':
         username = request.form['username']
         password =request.form['password']
@@ -378,7 +403,7 @@ def registerStudent():
         userCheck = User.query.filter_by(username = username).first()
 
         if not userCheck:
-            user = User(username = username, passwordHash = generate_password_hash(password), role = "student", active = True)
+            user = User(username = username, passwordHash = generate_password_hash(password), role = "Student", active = True)
             db.session.add(user)
             db.session.commit()
             student = Student(userId = user.userId, name = name,contactNumber = contactNumber, department = department, experience = experience, skills = skills, resume = resumePath )
@@ -429,6 +454,7 @@ def searchPostion(studentId):
 @app.route('/student/<int:studentId>/apply/<int:jobId>')
 @role_required('Student')
 def applyJob(studentId, jobId):
+
     app = Application.query.filter_by(studentId = studentId ,  jobId = jobId).first()
     companyId = request.args.get('companyId')
     company = None 
@@ -478,6 +504,7 @@ def viewHistory(studentId):
 @app.route('/student/<int:studentId>/editProfile', methods = ['GET','POST'])
 @role_required('Student')
 def editProfile(studentId):
+
     if request.method == 'GET':
         student = Student.query.filter_by(studentId = studentId).first_or_404()
         return render_template('./student/editProfile.html', student = student)

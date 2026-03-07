@@ -3,3 +3,5 @@ This is my IITM MAD -1 Project Repository
 
 Made changes to the job positions and users tables to better fit the requiremets. 
 The seed data file generates data to insert into the db.
+
+Company table was being displayed even if there were no on going drives. Rectified it by sorting the drives in the backend before sending it.
