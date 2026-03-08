@@ -144,7 +144,7 @@
                         <p><b>Position: </b>{{ selectedApplication.job.positionOpen }}</p>
                         <p><b>Status: </b> {{ selectedApplication.status}} </p>
                     </div>
-                    <a href="{{ url_for('viewResume',studentId = selectedApplication.student.studentId) }}" target="_blank">View Resume</a>
+                    <a class="btn btn-primary" href="{{ url_for('viewResume',studentId = selectedApplication.student.studentId) }}" target="_blank">View Resume</a>
                     <div>
                         <a href="{{ url_for('showStudents', adminId = adminId) }}" class="btn btn-danger">Close</a>
                         

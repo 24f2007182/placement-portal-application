@@ -132,8 +132,9 @@ def approveCompany(adminId,companyId):
 @role_required('Admin')
 def rejectCompany(adminId, companyId):
 
-    company = Company.query.filter_by(companyId = companyId).first_or_404()
-    company.approved = False
+    company = Company.query.filter_by(companyId = companyId).first()
+    user = User.query.filter_by(userId = company.userId).delete()
+    company = Company.query.filter_by(companyId = companyId).delete()
     db.session.commit()
     flash('Company rejected successfully!!')
     return redirect(url_for('showCompanies', adminId = adminId))
@@ -163,7 +164,7 @@ def toggleCompany(adminId, userId):
 @app.route('/admin/<int:adminId>/students', methods = ['GET','POST'])
 @role_required('Admin')
 def showStudents(adminId):
-    drives = JobPosition.query.all()
+    drives = JobPosition.query.join(Company).filter(Company.approved == True).all()
     students = Student.query.all()
     applications = Application.query.all()
     selectedApplication = None
@@ -197,12 +198,12 @@ def togglestudent(adminId, userId):
     if user.active == True:
         user.active = False
         db.session.commit()
-        flash('student blacklisted successfully!!')
+        flash('Student blacklisted successfully!!')
         return redirect(url_for('showStudents',adminId=adminId))
     else:
         user.active = True
         db.session.commit()
-        flash('student approved successfully!!')
+        flash('Student approved successfully!!')
         return redirect(url_for('showStudents', adminId = adminId))
 
 @app.route('/admin/<int:adminId>/jobDrives')
@@ -247,7 +248,7 @@ def showCompanyDash(companyId):
         placements = []
         for drive in drives:            
             application = Application.query.filter_by(jobId = drive.jobId).first()
-            if application != None:
+            if application.status == 'Accepted':
                 placement = Placement.query.filter_by(applicationId = application.applicationId).first()
             applications.append(application)
             placements.append(placement)
@@ -260,18 +261,17 @@ def showCompanyDash(companyId):
 def createDrive(companyId):
 
     if request.method == 'GET':
-        return render_template('./company/createDrive.html', companyId = companyId
-        
-        )
+        return render_template('./company/createDrive.html', companyId = companyId)
     if request.method == 'POST':
         newJob = JobPosition(companyId = companyId,
-                             driveName = request.form['name'],
-                            positionOpen = request.form['position'],
-                            description = request.form['desc'],
-                            skillsRequired = request.form['skills'],
-                            experienceRequired = request.form['exp'],
-                            salary = request.form['sal'],
-                            location = request.form['location'])
+                             driveName = request.form.get('name'),
+                            positionOpen = request.form.get('position'),
+                            description = request.form.get('desc'),
+                            skillsRequired = request.form.get('skills'),
+                            experienceRequired = request.form.get('exp'),
+                            deadline = datetime.strptime(request.form.get('deadline'), '%Y-%m-%d'),
+                            salary = request.form.get('sal'),
+                            location = request.form.get('location'))
         db.session.add(newJob)
         db.session.commit()
         flash('Added new drive successfully!')
@@ -285,9 +285,6 @@ def showCompanyApplications(companyId):
         viewAppId = request.args.get("viewAppId")
         selectedApplication = None
         drives = JobPosition.query.filter_by(companyId = companyId).all()
-
-        
-
         if viewAppId:
             selectedApplication = Application.query.filter_by(applicationId = viewAppId).first()   
         
@@ -326,7 +323,7 @@ def updateApplicationStatus(companyId, applicationId):
     updatedStatus = request.form['status']
     application = Application.query.filter_by(applicationId = applicationId).first_or_404()
     application.status = updatedStatus
-    if updatedStatus == 'Placed':
+    if updatedStatus == 'Accepted':
         
         newPlacement = Placement(applicationId = application.applicationId, package = application.job.salary, placedOn = datetime.now() )
         db.session.add(newPlacement)
@@ -372,15 +369,23 @@ def registerCompany():
         email = request.form.get('email')
         description = request.form.get('description')
         industry = request.form.get('industry')
-        user = User(username = username, passwordHash = generate_password_hash(password), role = 'Company')
-        db.session.add(user)
-        db.session.commit()
+      
+        userCheck = User.query.filter_by(username = username).first()
 
-        company = Company(userId = user.userId, companyName = name, industry = industry, description = description, companyEmail = email)
-        db.session.add(company)
-        db.session.commit()
-        flash('Regiestered Company Successfully! You will be able to login pending admin approval.')
-        return redirect(url_for('index'))
+
+        if not userCheck:
+            user = User(username = username, passwordHash = generate_password_hash(password), role = 'Company')
+            db.session.add(user)
+            db.session.commit()
+            company = Company(userId = user.userId, companyName = name, industry = industry, description = description, companyEmail = email)
+            db.session.add(company)
+            db.session.commit()
+            flash('Registered Company Successfully! You will be able to login pending admin approval.')
+            return redirect(url_for('index'))
+
+        else:
+            flash("Username already exists. Please choose another", "danger")
+            return redirect(url_for('login'))
     return render_template('registerCompany.html')
 
 #students login routes 
@@ -412,6 +417,8 @@ def registerStudent():
 
         else:
             flash("Username already exists. Please choose another", "danger")
+            return redirect(url_for('login'))
+
         
         return render_template('index.html')
     return render_template('registerStudent.html')
@@ -442,13 +449,13 @@ def searchPostion(studentId):
     print(search)
     companyId = request.args.get('companyId')
     jobs = JobPosition.query.join(Company).filter(
+        Company.approved == True, JobPosition.active ==True,
         Company.companyName.ilike(f'%{search}%') |
         JobPosition.positionOpen.ilike(f'%{search}%') | 
         JobPosition.skillsRequired.ilike(f'%{search}%')).all()
     company = None 
     if companyId:
         company = Company.query.filter_by(companyId = companyId).first()
-    print(jobs,studentId)
     return render_template('./student/viewJobs.html', studentId = studentId, company = company,drives = jobs)
     
 @app.route('/student/<int:studentId>/apply/<int:jobId>')
@@ -465,10 +472,10 @@ def applyJob(studentId, jobId):
         application = Application(studentId = studentId, jobId =jobId)
         db.session.add(application)
         db.session.commit()
-        return redirect(url_for('viewJobs', studentId = studentId))
+        return redirect(url_for('viewJobs',companyId = companyId, studentId = studentId))
     else:
         flash("Already applied for the drive!", 'error')
-        return redirect(url_for('viewJobs' , studentId = studentId))
+        return redirect(url_for('viewJobs' , companyId = companyId,studentId = studentId))
 
 @app.route('/student/<int:studentId>/viewJobs')
 @role_required('Student')
@@ -481,9 +488,9 @@ def viewJobs(studentId):
             JobPosition.positionOpen.ilike(f'%{search}%') | 
             JobPosition.skillsRequired.ilike(f'%{search}%')).all()
     if companyId:
-        drives = JobPosition.query.filter_by(companyId = companyId).all()
+        drives = JobPosition.query.filter(JobPosition.active == True).filter_by(companyId = companyId).all()
     else:
-        drives = JobPosition.query.all()
+        drives = JobPosition.query.join(Company).filter(Company.approved == True, JobPosition.active == True).all()
 
     company = Company.query.filter_by(companyId = companyId).first()
     viewDriveId = request.args.get('viewDriveId')

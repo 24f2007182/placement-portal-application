@@ -69,6 +69,7 @@ class JobPosition(db.Model):
     description = db.Column(db.String, nullable = False)
     skillsRequired = db.Column(db.String, nullable = False)
     experienceRequired = db.Column(db.String, nullable = False)
+    deadline = db.Column(db.DateTime, nullable = False)
     active = db.Column(db.Boolean, default = True, nullable = False)
     salary = db.Column(db.String, nullable = False)
     location = db.Column(db.String, nullable = False)

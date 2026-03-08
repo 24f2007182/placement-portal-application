@@ -48,13 +48,15 @@
         <form method = "POST" action = "/student/{{ studentId }}/viewJobs">
             <label for = "search" class = "form-label">Search For Position: </label>
             <input type = "text" class = "form-control" name = "search"> 
-            <input class = "form-control" type ="submit">Search</input>
+                       <button class = "btn btn-light" type ="submit">Search</button>
+
         </form>
         <div class="table-container-student">
         <table class = "table table-striped"> 
             <tr>
             <th>Sr No.</th>
             <th>Name</th>
+            <th>Application Deadline</th>
             <th>Actions</th>
             </tr>
         {% for drive in drives %}
@@ -62,6 +64,7 @@
         <tr>
             <td>{{ loop.index }}</td>
             <td>{{drive.driveName}}</td>
+            <td>{{ drive.deadline.strftime('%d-%b-%Y') }}</td>
             <td><a href = "{{ url_for('viewJobs', studentId = studentId, companyId = company.companyId ,viewDriveId = drive.jobId) }}">View</a></td>
         </tr>
         {% endif %}
@@ -72,7 +75,7 @@
         <form method = "POST" action = "/student/{{ studentId }}/viewJobs">
             <label for = "search" class = "form-label">Search For Position: </label>
             <input type = "text" class = "form-control" name = "search"> 
-            <button type ="submit">Search</button>
+            <button class = "btn btn-light" type ="submit">Search</button>
         </form>
         <h3>Ongoing Drives:</h3>
         <div class="table-container">
@@ -82,6 +85,7 @@
                 <th>Name</th>
                 <th>Position</th>
                 <th>Company Name</th>
+                <th>Application Deadline</th>
                 <th>Actions</th>
             </tr>
         {% for drive in drives %}
@@ -90,6 +94,7 @@
             <td>{{ drive.driveName}}</td>
             <td>{{ drive.positionOpen }}</td>
             <td>{{ drive.company.companyName }}</td>
+            <td> {{ drive.deadline.strftime('%d-%b-%Y') }}</td>
             <td><a href = "{{ url_for('viewJobs', studentId = studentId, viewDriveId = drive.jobId) }}">View Details</a></td>
         </tr>
         {% endfor %}

@@ -52,6 +52,7 @@
             <tr>
                 <th>ID</th>
                 <th>Drive Name</th>
+                <th>Application Deadine</th>
                 <th>Actions</th>
             </tr>
             {%  for drive in activeDrives %}
@@ -59,6 +60,7 @@
             <tr>
                 <td>{{ drive.jobId }}</td>
                 <td> {{ drive.driveName }}</td>
+                <td>{{ drive.deadline.strftime('%d-%b-%Y') }}</td>
                 <td>
                     <a class="btn" href = "{{ url_for('showCompanyDrives', companyId = companyId, viewDriveId = drive.jobId) }}">View Details</a>
 

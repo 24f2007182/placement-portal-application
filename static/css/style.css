@@ -1,8 +1,11 @@
 
 body{
     font-family:'Times New Roman', Times, serif;
-    background: radial-gradient(circle,#03125c, #2d3af6, #1d77de);
-    color: #ffffff;
+    background-image: url('../images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #000000;
 }
 
        
@@ -11,7 +14,7 @@ body{
     top: 0;
     z-index: 1030;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    background-color: #09277a;
+    background-color: #76cfcb;
     padding: 10px 20px;
 }
 
@@ -59,8 +62,8 @@ body{
 
 
 .table th{
-    background-color: #09277a;
-    color: white;
+    background-color: #76cfcb;
+    color: rgb(0, 0, 0);
     font-weight: 600;
     padding: 12px;
     text-align: left;
@@ -76,7 +79,7 @@ body{
 
 
 .table a{
-    color: #09277a;
+    color: #76cfcb;
     text-decoration: none;
     font-weight: 500;
 }
@@ -89,8 +92,8 @@ footer{
     margin-top: 50px;
     text-align: center;
     padding: 15px;
-    background-color: #09277a;
-    color: white;
+    background-color: #76cfcb;
+    color: rgb(0, 0, 0);
 }
 
 .modal-overlay {
@@ -114,7 +117,7 @@ form button{
     margin: 4px;
 }
 .modal-box {
-    background: rgba(14, 4, 59, 0.648);
+    background: rgba(43, 230, 220, 0.674);
     padding: 25px;
     border-radius: 10px;
     width: 500px;
@@ -139,7 +142,7 @@ form button{
 
 .stat-label {
     font-size: 0.85rem;
-    color: #c4bef7;
+    color: #48233d;
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -148,14 +151,14 @@ form button{
 .stat-value {
     font-size: 2rem;
     font-weight: bold;
-    color: #ffffff;
+    color: #000000;
 }
 
 .action-card {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #09277a;
+    background: #76cfcb;
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 10px;
     padding: 18px 20px;
@@ -166,7 +169,7 @@ form button{
 }
 
 .action-card:hover {
-    background: #1a3fa0;
+    background: #9b1aa0;
     color: #ded5ff;
     transform: translateY(-2px);
 }
@@ -176,7 +179,8 @@ form button{
 }
 
 .flash-container{
-    z-index: 2000;
+    z-index: 5000;
     position: fixed;
-    top: 0;
+    top: 50;
+    left: 50;
 }

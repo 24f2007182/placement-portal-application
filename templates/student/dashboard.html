@@ -75,26 +75,26 @@
 
     {% if notifications %}
         <div class="list-group">
-            {% for note in notifications %}
+            {% for notification in notifications %}
                 <div class="list-group-item">
                     <h5>
-                        {{ note.job.driveName }} -
-                        {{ note.job.company.companyName }}
+                        {{ notification.job.driveName }} -
+                        {{ notification.job.company.companyName }}
                     </h5>
 
                     <p>
                         Your application status is:
-                        {% if note.status == 'Accepted' %}
+                        {% if notification.status == 'Accepted' %}
                             <span class="badge bg-success">Accepted</span>
-                        {% elif note.status == 'Rejected' %}
+                        {% elif notification.status == 'Rejected' %}
                             <span class="badge bg-danger">Rejected</span>
-                        {% elif note.status == 'Shortlisted' %}
+                        {% elif notification.status == 'Shortlisted' %}
                             <span class="badge bg-warning text-dark">Shortlisted</span>
                         {% endif %}
                     </p>
 
                     <small class="text-muted">
-                        Updated on: {{ note.appliedOn.strftime('%d-%b-%Y') }}
+                        Updated on: {{ notification.appliedOn.strftime('%d-%b-%Y') }}
                     </small>
                 </div>
             {% endfor %}

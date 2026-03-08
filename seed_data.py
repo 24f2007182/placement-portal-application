@@ -1,8 +1,7 @@
-
 from models import Admin, db
 from models import User, Student, Company, JobPosition, Application
 from werkzeug.security import generate_password_hash
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 
 
@@ -161,6 +160,9 @@ def seed():
 
             title_index = random.randint(0, len(job_titles) - 1)
 
+            # Generate a random deadline between 15 and 60 days from today
+            deadline = datetime.now() + timedelta(days=random.randint(15, 60))
+
             job = JobPosition(
                 driveName=f"{company.companyName} Campus Recruitment Drive {i+1}",
                 positionOpen=job_titles[title_index],
@@ -170,7 +172,8 @@ def seed():
                 experienceRequired = random.choice(['Fresher', '0-1 years']),
                 location=random.choice(["Bangalore", "Hyderabad", "Mumbai", "Pune", "Chennai"]),
                 companyId=company.companyId,
-                active = random.choice([True, False])
+                active = random.choice([True, False]),
+                deadline=deadline
             )
 
             db.session.add(job)
