@@ -52,12 +52,12 @@ def seed():
         db.session.flush()
 
         company = Company(
-            userId=user.userId,
-            companyName=name,
-            industry=industry,
-            description=f"{name} is a leading company in the {industry} industry, known for innovation and global technology solutions.",
-            companyEmail=f"careers@{name.lower()}.com",
-            approved=random.choice([True,False])
+            userId = user.userId,
+            companyName = name,
+            industry = industry,
+            description = f"{name} is a leading company in the {industry} industry, known for innovation and global technology solutions.",
+            companyEmail = f"careers@{name.lower()}.com",
+            approved = random.choice([True,False])
         )
 
         db.session.add(company)
@@ -110,23 +110,23 @@ def seed():
     for i, name in enumerate(student_names):
 
         user = User(
-            username=f"student{i+1}",
+            username = f"student{i+1}",
             passwordHash = generate_password_hash("student123"),
-            role="Student",
-            active=True
+            role = "Student",
+            active = True
         )
 
         db.session.add(user)
         db.session.flush()
 
         student = Student(
-            name=name,
-            department=random.choice(departments),
-            contactNumber=f"98{random.randint(10000000,99999999)}",
-            skills=random.choice(skills_list),
-            experience=random.choice(experience_levels),
-            resume="./static/resumes/resume.pdf",
-            userId=user.userId
+            name = name,
+            department = random.choice(departments),
+            contactNumber =  f"98{random.randint(10000000,99999999)}",
+            skills = random.choice(skills_list),
+            experience = random.choice(experience_levels),
+            resume = "./static/resumes/resume.pdf",
+            userId = user.userId
         )
 
         db.session.add(student)
@@ -160,20 +160,20 @@ def seed():
 
             title_index = random.randint(0, len(job_titles) - 1)
 
-            # Generate a random deadline between 15 and 60 days from today
+            
             deadline = datetime.now() + timedelta(days=random.randint(15, 60))
 
             job = JobPosition(
-                driveName=f"{company.companyName} Campus Recruitment Drive {i+1}",
-                positionOpen=job_titles[title_index],
-                description= job_descriptions[title_index],
-                skillsRequired=random.choice(skills_list),
-                salary=random.randint(6, 18) * 100000,
+                driveName = f"{company.companyName} Campus Recruitment Drive {i+1}",
+                positionOpen = job_titles[title_index],
+                description = job_descriptions[title_index],
+                skillsRequired = random.choice(skills_list),
+                salary = random.randint(6, 18) * 100000,
                 experienceRequired = random.choice(['Fresher', '0-1 years']),
-                location=random.choice(["Bangalore", "Hyderabad", "Mumbai", "Pune", "Chennai"]),
-                companyId=company.companyId,
+                location = random.choice(["Bangalore", "Hyderabad", "Mumbai", "Pune", "Chennai"]),
+                companyId = company.companyId,
                 active = random.choice([True, False]),
-                deadline=deadline
+                deadline = deadline
             )
 
             db.session.add(job)
@@ -190,10 +190,10 @@ def seed():
         for job in applied_jobs:
 
             application = Application(
-                studentId=student.studentId,
-                jobId=job.jobId,
-                status=random.choice(statuses),
-                appliedOn=datetime.now()
+                studentId = student.studentId,
+                jobId = job.jobId,
+                status = random.choice(statuses),
+                appliedOn = datetime.now()
             )
 
             db.session.add(application)

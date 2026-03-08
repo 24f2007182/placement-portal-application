@@ -3,9 +3,7 @@ import os
 from flask_security import login_required
 from flask_login import LoginManager, current_user, login_user, logout_user
 from flask import Flask, abort, get_flashed_messages, render_template, redirect, send_file, session, url_for,request , flash
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
 from sqlalchemy import String, cast
 from seed_data import seed
 from werkzeug.security import check_password_hash, generate_password_hash
