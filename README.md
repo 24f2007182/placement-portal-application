@@ -8,4 +8,4 @@ Company table was being displayed even if there were no on going drives. Rectifi
 
 The flash message wasn't closing and was showing older messages as well.Debugged it by clearing the cache after each flash message.
 
-The rendering of drives that were active wasnt working properly fixed that by adding proper filtering parameters.
+The rendering of drives that were active wasnt working properly fixed that by adding proper filtering parameters in the queries to ensure they run correctly.
