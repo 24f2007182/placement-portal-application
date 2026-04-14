@@ -245,11 +245,15 @@ def showCompanyDash(companyId):
         applications = []
         placements = []
         for drive in drives:            
-            application = Application.query.filter_by(jobId = drive.jobId).first()
-            if application.status == 'Accepted':
-                placement = Placement.query.filter_by(applicationId = application.applicationId).first()
-            applications.append(application)
-            placements.append(placement)
+            applicationsList = Application.query.filter_by(jobId = drive.jobId).all()
+            for application in applicationsList:
+                if application !=None:
+                    placements.append(placement)
+                    if application.status == 'Accepted':
+                        placement = Placement.query.filter_by(applicationId = application.applicationId).first()
+                        applications.append(application)
+                    
+                    
         totalApplications = len(applications)
         totalPlacements = len(placements)
         return render_template('./company/dashboard.html',totalPlacements = totalPlacements, company = company, drives = drives, applications = applications, totalApplications = totalApplications, totalDrives = totalDrives)
@@ -540,4 +544,5 @@ def editProfile(studentId):
  
              
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
