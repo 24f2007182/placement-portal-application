@@ -1,69 +1,82 @@
+:root {
+    --primary-teal: #76cfcb;
+    --hover-purple: #ded5ff;
+    --action-hover: #9b1aa0;
+    --card-bg: rgb(227, 225, 250);
+    --text-dark: #000000;
+    --text-light: #ffffff;
+    
+    --border-radius-sm: 6px;
+    --border-radius-lg: 12px;
+    --nav-padding: 10px 20px;
+    --transition-speed: 0.3s;
 
-body{
-    font-family:'Times New Roman', Times, serif;
+    --main-font: 'Times New Roman', Times, serif;
+    --heading-font: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+body {
+    font-family: var(--main-font);
     background-image: url('../images/background.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    color: #000000;
+    color: var(--text-dark);
 }
 
-       
-.navbar{
+.navbar {
     position: sticky;
     top: 0;
     z-index: 1030;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    background-color: #76cfcb;
-    padding: 10px 20px;
+    background-color: var(--primary-teal);
+    padding: var(--nav-padding);
 }
 
-.navbar-brand{
-    color: white;
+.navbar-brand {
+    color: var(--text-light);
     font-weight: bold;
     font-size: 28px;
 }
 
-.nav-link{
-    color: #ffffff;
+.nav-link {
+    color: var(--text-light);
     margin-left: 15px;
     font-size: 20px;
-
+    transition: color var(--transition-speed);
 }
 
-.nav-link:hover{
-    color: #ded5ff;
+.nav-link:hover {
+    color: var(--hover-purple);
 }
 
-
-.content{
+.content {
     margin: 25px;
 }
 
-.table-container{
+.table-container {
     max-height: 350px;
     overflow-y: auto;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
     margin: 4px;
 }
 
-.table-container-student{
+.table-container-student {
     max-height: 1000px;
     overflow-y: auto;
-    border-radius: 6px;
+    border-radius: var(--border-radius-sm);
 }
-.info-card{
-    background-color: rgb(227, 225, 250);
+
+.info-card {
+    background-color: var(--card-bg);
     color: #333;
     border-radius: 8px;
     border: none;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-
-.table th{
-    background-color: #76cfcb;
-    color: rgb(0, 0, 0);
+.table th {
+    background-color: var(--primary-teal);
+    color: var(--text-dark);
     font-weight: 600;
     padding: 12px;
     text-align: left;
@@ -72,28 +85,27 @@ body{
     z-index: 1000;
 }
 
-.table td{
+.table td {
     padding: 12px;
     border-bottom: 1px solid #eee;
 }
 
-
-.table a{
-    color: #76cfcb;
+.table a {
+    color: var(--primary-teal);
     text-decoration: none;
     font-weight: 500;
 }
 
-.table a:hover{
+.table a:hover {
     text-decoration: underline;
 }
 
-footer{
+footer {
     margin-top: 50px;
     text-align: center;
     padding: 15px;
-    background-color: #76cfcb;
-    color: rgb(0, 0, 0);
+    background-color: var(--primary-teal);
+    color: var(--text-dark);
 }
 
 .modal-overlay {
@@ -109,13 +121,15 @@ footer{
     z-index: 1050;
 }
 
-h2{
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+h2 {
+    font-family: var(--heading-font);
 }
-form button{
+
+form button {
     padding: 2px;
     margin: 4px;
 }
+
 .modal-box {
     background: rgba(43, 230, 220, 0.674);
     padding: 25px;
@@ -123,16 +137,16 @@ form button{
     width: 500px;
     box-shadow: 0 5px 20px rgba(0,0,0,0.3);
     font-family: Georgia, "Times New Roman", Times, serif;
-
 }
 
 .stat-card {
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
+    border-radius: var(--border-radius-lg);
     padding: 20px;
     text-align: center;
     backdrop-filter: blur(6px);
+    transition: all var(--transition-speed);
 }
 
 .stat-card:hover {
@@ -151,26 +165,27 @@ form button{
 .stat-value {
     font-size: 2rem;
     font-weight: bold;
-    color: #000000;
+    color: var(--text-dark);
 }
 
 .action-card {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #76cfcb;
+    background: var(--primary-teal);
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 10px;
     padding: 18px 20px;
-    color: white;
+    color: var(--text-light);
     text-decoration: none;
     font-size: 1rem;
     font-weight: 500;
+    transition: background var(--transition-speed), transform var(--transition-speed);
 }
 
 .action-card:hover {
-    background: #9b1aa0;
-    color: #ded5ff;
+    background: var(--action-hover);
+    color: var(--hover-purple);
     transform: translateY(-2px);
 }
 
@@ -178,9 +193,9 @@ form button{
     font-size: 1.5rem;
 }
 
-.flash-container{
+.flash-container {
     z-index: 5000;
     position: fixed;
-    top: 50;
-    left: 50;
+    top: 50px; 
+    left: 50px;
 }
