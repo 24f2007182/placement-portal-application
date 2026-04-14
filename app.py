@@ -245,11 +245,15 @@ def showCompanyDash(companyId):
         applications = []
         placements = []
         for drive in drives:            
-            application = Application.query.filter_by(jobId = drive.jobId).first()
-            if application.status == 'Accepted':
-                placement = Placement.query.filter_by(applicationId = application.applicationId).first()
-            applications.append(application)
-            placements.append(placement)
+            applicationsList = Application.query.filter_by(jobId = drive.jobId).all()
+            for application in applicationsList:
+                if application !=None:
+                    placements.append(placement)
+                    if application.status == 'Accepted':
+                        placement = Placement.query.filter_by(applicationId = application.applicationId).first()
+                        applications.append(application)
+                    
+                    
         totalApplications = len(applications)
         totalPlacements = len(placements)
         return render_template('./company/dashboard.html',totalPlacements = totalPlacements, company = company, drives = drives, applications = applications, totalApplications = totalApplications, totalDrives = totalDrives)
