@@ -248,10 +248,12 @@ def showCompanyDash(companyId):
             applicationsList = Application.query.filter_by(jobId = drive.jobId).all()
             for application in applicationsList:
                 if application !=None:
-                    placements.append(placement)
+                    applications.append(application)
+
                     if application.status == 'Accepted':
                         placement = Placement.query.filter_by(applicationId = application.applicationId).first()
-                        applications.append(application)
+                        placements.append(placement)
+                        
                     
                     
         totalApplications = len(applications)

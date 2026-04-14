@@ -8,29 +8,40 @@
 
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg px-4">
-        <a class="navbar-brand" href="{{ url_for('showCompanyDash', companyId = companyId) }}">Placement Portal</a>
+    <nav class="navbar navbar-expand-lg px-4" style="background-color: var(--primary-teal);">
+    <div class="container-fluid">
 
-        <div class="collapse navbar-collapse">
+        <a class="navbar-brand text-white" href="{{ url_for('showCompanyDash', companyId=companyId) }}">
+            Placement Portal
+        </a>
+
+        <button class="navbar-toggler border-0 text-white" type="button"
+                data-bs-toggle="collapse" data-bs-target="#companyNavbar">
+            ☰
+        </button>
+
+        <div class="collapse navbar-collapse" id="companyNavbar">
             <ul class="navbar-nav ms-auto">
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDash', companyId = companyId) }}">Dashboard</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('showCompanyDash', companyId=companyId) }}">Dashboard</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives', companyId = companyId) }}">Existing Drives</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('showCompanyDrives', companyId=companyId) }}">Existing Drives</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('createDrive', companyId = companyId) }}">Create New Drive</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('createDrive', companyId=companyId) }}">Create New Drive</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications', companyId = companyId) }}">View Applications</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('showCompanyApplications', companyId=companyId) }}">View Applications</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link text-danger" href = "{{ url_for('logout') }}">Logout</a>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
                 </li>
             </ul>
         </div>
-    </nav>
+
+    </div>
+</nav>
             <div class="flash-container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}

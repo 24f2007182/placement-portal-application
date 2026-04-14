@@ -19,29 +19,40 @@
             {% endif %}
         {% endwith %}
         </div>
-    <nav class="navbar navbar-expand-lg px-4">
-        <a class="navbar-brand" href="{{ url_for('showCompanyDash', companyId = company.companyId) }}">Placement Portal</a>
+<nav class="navbar navbar-expand-lg px-4" style="background-color: var(--primary-teal);">
+    <div class="container-fluid">
 
-        <div class="collapse navbar-collapse">
+        <a class="navbar-brand text-white" href="{{ url_for('showCompanyDash', companyId=company.companyId) }}">
+            Placement Portal
+        </a>
+
+        <button class="navbar-toggler border-0 text-white" type="button"
+                data-bs-toggle="collapse" data-bs-target="#companyNavbar">
+            ☰
+        </button>
+
+        <div class="collapse navbar-collapse" id="companyNavbar">
             <ul class="navbar-nav ms-auto">
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDash', companyId = company.companyId ) }}">Dashboard</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('showCompanyDash', companyId=company.companyId) }}">Dashboard</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyDrives', companyId = company.companyId) }}">Existing Drives</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('showCompanyDrives', companyId=company.companyId) }}">Existing Drives</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('createDrive', companyId = company.companyId) }}">Create New Drive</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('createDrive', companyId=company.companyId) }}">Create New Drive</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link" href = "{{ url_for('showCompanyApplications', companyId = company.companyId) }}">View Applications</a>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('showCompanyApplications', companyId=company.companyId) }}">View Applications</a>
                 </li>
-                <li class = "nav-item">
-                    <a class = "nav-link text-danger" href = "{{ url_for('logout') }}">Logout</a>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="{{ url_for('logout') }}">Logout</a>
                 </li>
             </ul>
         </div>
-    </nav>
+
+    </div>
+</nav>
  <div class="content">
     <h1>Welcome Back, {{ company.companyName}}!</h1>
         <h5 class="mb-3">Overview</h5>
